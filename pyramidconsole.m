@@ -5,13 +5,13 @@
 % October 19, 2017
 
 
-npix= 512; %number of pixels across the pupil diameter
-Npix= 2048; % number of pixels across the total roster. Represents the amount of zero padding.
+npix= 256; %number of pixels across the pupil diameter
+Npix= 2560; % number of pixels across the total roster. Represents the amount of zero padding.
 lambda= 700.*10^-9; %wavelength in nanometers
-error=1*10^-9; % nanometers of error you will be applying though the WFS
-sampling=64; % 128; 32 %Numberof pixels across each pupil. chose 32, 64,or 128 le
-rooferror=2; % in pixels. If you have a roof error, number of pixels in diameter creating the roof effect. 
-tabletoperror=2; %in pixels. If you have a tabletop error, number of pixels in diameter creating the flattened tabletop of the pyramid tip. 
+error=5*10^-9; % nanometers of error you will be applying though the WFS
+sampling=32; % 128; 32 %Numberof pixels across each pupil. chose 32, 64,or 128 le
+rooferror=4; % in pixels. If you have a roof error, number of pixels in diameter creating the roof effect. 
+tabletoperror=10; %in pixels. If you have a tabletop error, number of pixels in diameter creating the flattened tabletop of the pyramid tip. 
 
 %% Set Up
 
@@ -19,7 +19,7 @@ tabletoperror=2; %in pixels. If you have a tabletop error, number of pixels in d
 
 tripyramid=false; %toggle true/false for 3PWFS simulation. If false, will run 4PWFS simulation
 have_reconstructor=false; %toggle true/false for reconstructor matrix
-have_pyramidmask=true;  %toggle true/fasle for pyramid focal plane maske.
+have_pyramidmask=false;  %toggle true/fasle for pyramid focal plane maske.
 
 roof=false; %toggle true/false for roof error
 tabletop=false; % toggle true/false for tabletop error
@@ -37,7 +37,7 @@ MVM=true; %Toggle true/false. True: Will run Matrix-Vector-Multiply (intensity C
         %pattern. (COMING SOON)
     %modulatedphasescrn: Same as phasescrn but with a 16 point modulation
         %pattern. (COMING SOON)
-
+zpupil=true;
 %% Run Simulation
 
 %% Load in or generate the pyramid focal plane masks
@@ -60,7 +60,7 @@ end
 
 %% Errors on the pyramid
 
-if tabletop==true;
+if tabletop==true
     
     
 end

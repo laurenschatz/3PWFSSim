@@ -5,24 +5,38 @@ function rpupil=pyramidsim(error, npix, Npix, sampling, rmatrix, lambda, tripyra
 % Centers of the pyramid pupils
 % Sampling= # of pixels across the pyramid pupil 
 if sampling==32
-    cen1=[38,38];
-    cen2=[92,38];
-    cen3=[38,92];
-    cen4=[92,92];
+%     cen1=[38,38];
+%     cen2=[92,38];
+%     cen3=[38,92];
+%     cen4=[92,92];
+
+      cen1=[161,255];
+      cen2=[255,161];
+      cen3=[161,66];
+      cen4=[66,161];
 end
 
 if sampling==64
-    cen1=[75,75];
-    cen2=[183,75];
-    cen3=[75,183];
-    cen4=[183,183];
+%     cen1=[75,75];
+%     cen2=[183,75];
+%     cen3=[75,183];
+%     cen4=[183,183];
+
+      cen1=[321,510];
+      cen2=[510,321];
+      cen3=[321,132];
+      cen4=[132,321];
 end
 
 if sampling==128
-    cen1=[150,150];
-    cen2=[366,150];
-    cen3=[150,366];
-    cen4=[366,366];
+%     cen1=[150,150];
+%     cen2=[366,150];
+%     cen3=[150,366];
+%     cen4=[366,366];
+      cen1=[641,1019];
+      cen2=[1019,641];
+      cen3=[641,264];
+      cen4=[264,641];
 end
     
 
@@ -127,11 +141,10 @@ for n=0:5
     end
     end
 end
+
 WF=zernike(0,0,npix).*exp(1i*(2*pi./lambda)*el*error);
 rpupil = complex(zeros(Npix));
 rpupil(Npix/2-npix/2:Npix/2+npix/2-1,Npix/2-npix/2:Npix/2+npix/2-1)= WF;
-
-
 
 
 end

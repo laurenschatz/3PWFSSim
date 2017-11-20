@@ -5,26 +5,39 @@ function [rmatrix,success]= reconstructorgenerator(npix, Npix, pyramidmask, lamb
 % Centers of the pyramid pupils
 % Sampling= # of pixels across the pyramid pupil 
 if sampling==32
-    cen1=[38,38];
-    cen2=[92,38];
-    cen3=[38,92];
-    cen4=[92,92];
+%     cen1=[38,38];
+%     cen2=[92,38];
+%     cen3=[38,92];
+%     cen4=[92,92];
+
+      cen1=[161,255];
+      cen2=[255,161];
+      cen3=[161,66];
+      cen4=[66,161];
 end
 
 if sampling==64
-    cen1=[75,75];
-    cen2=[183,75];
-    cen3=[75,183];
-    cen4=[183,183];
+%     cen1=[75,75];
+%     cen2=[183,75];
+%     cen3=[75,183];
+%     cen4=[183,183];
+
+      cen1=[321,510];
+      cen2=[510,321];
+      cen3=[321,132];
+      cen4=[132,321];
 end
 
 if sampling==128
-    cen1=[150,150];
-    cen2=[366,150];
-    cen3=[150,366];
-    cen4=[366,366];
+%     cen1=[150,150];
+%     cen2=[366,150];
+%     cen3=[150,366];
+%     cen4=[366,366];
+      cen1=[641,1019];
+      cen2=[1019,641];
+      cen3=[641,264];
+      cen4=[264,641];
 end
-    
 
 
 %% Zernike Generation
@@ -61,10 +74,11 @@ FTpupil=fftshift(fft2(fftshift(pupil)))/(length(Npix).*length(Npix));
 pyramid=FTpupil.*pyramidmask; %Apply the OPD mask to simulate the pyramid tip
 % figure;imagesc(angle(pyramid));axis equal; title('Pyramid focal plane
 % splitting')
+%figure; imagesc(angle(pyramid));axis equal
 
 %% Back to Pupil Plane and simulate detection
 Pupilpyramid=abs(ifftshift(fft2(ifftshift(pyramid)))).^2;
-
+figure; imagesc(Pupilpyramid); axis equal
 %% Bin the pupil oixels 
 [a,b]=size(Pupilpyramid);
 p=npix/sampling;
@@ -73,6 +87,7 @@ Pupilpyramid=sum(reshape(Pupilpyramid, p, []),1);
 Pupilpyramid=reshape(Pupilpyramid, a/p, []).';
 Pupilpyramid=sum(reshape(Pupilpyramid, p, []),1);
 Pupilpyramid=reshape(Pupilpyramid, b/p, []).';
+%figure;imagesc(Pupilpyramid); axis equal
 
 %% Intensity Centroid Calculation MVM
 if MVM==true

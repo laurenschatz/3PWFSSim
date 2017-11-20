@@ -7,6 +7,12 @@ function [pyramidmask]=maskgenerator(Npix, tripyramid, tabletoperror ,tabletop, 
 % npix=512;
 % tripyramid=true;
 % pyramid=tripyramid;
+
+    ef= zernike(0,0,npix).*exp(1i*((2*pi)/lambda).*zernike(0,0, npix));        
+    pupil = complex(zeros(Npix));
+    pupil(Npix/2-npix/2:Npix/2+npix/2-1,Npix/2-npix/2:Npix/2+npix/2-1) =ef;
+    
+FTpupil=fftshift(fft2(fftshift(pupil)))/(length(Npix).*length(Npix));
 %%
 %coordinate system setup.
 x= (-Npix/2:Npix/2-1);
@@ -15,12 +21,16 @@ x= (-Npix/2:Npix/2-1);
 
 %zernike polynomials (tip/tilt)
 tilt=.295;
-zernike={r.*cos(phi),r.*sin(phi)};
-W1=tilt*(cos(-3*pi/4).*zernike{1}+sin(-3*pi/4).*zernike{2});
-W2= tilt*(cos(-pi/4).*zernike{1}+sin(-pi/4).*zernike{2});
-W3= -tilt*(cos(pi/4).*zernike{1}-sin(pi/4).*zernike{2});
-W4= -tilt*(cos(3*pi/4).*zernike{1}-sin(3*pi/4).*zernike{2});
+zernikez={r.*cos(phi),r.*sin(phi)};
+% W1=tilt*(cos(-3*pi/4).*zernike{1}+sin(-3*pi/4).*zernike{2});
+%W2= tilt*(cos(-pi/4).*zernikez{1}+sin(-pi/4).*zernikez{2});
+%W3= -tilt*(cos(pi/4).*zernikez{1}-sin(pi/4).*zernikez{2});
+%W4= -tilt*(cos(3*pi/4).*zernikez{1}-sin(3*pi/4).*zernikez{2});
 
+W1=tilt*(zernikez{2});
+W2=tilt*zernikez{1};
+W3=tilt*-zernikez{2};
+W4=tilt*-zernikez{1};
 %Masks;
 %%
 
@@ -48,10 +58,12 @@ pyramidmask=focalt1+focalt2+focalt3;
 figure; imagesc(angle(pyramidmask));
 save('tripyramidmask.mat','pyramidmask')
 
-if tabletop==true; 
+if tabletop==true
 flat=pyramidmask(Npix/2, Npix/2);
 pyramidmask(Npix/2-tabletoperror/2:Npix/2+tabletoperror/2,Npix/2-tabletoperror/2:Npix/2+tabletoperror/2)=flat;
 figure; imagesc(angle(pyramidmask));
+figure; imagesc(angle(pyramidmask));
+save('quadpyramidmask.mat','pyramidmask')
 end
 
 end
@@ -74,17 +86,24 @@ if tripyramid==false
                     %fourth 1/4 facet
                     quad4= quad1+quad2+quad3<1;
                     %figure; imagesc(quad1+2*quad2+3*quad3+4*quad4)
-                    
+%%                    
 if roof==true
 %% roof error
+quad2=imtranslate(quad2, [rooferror/2,0]);
+    quad4=imtranslate(quad4,[-rooferror/2,0]);
+        quad1=quad4+quad2<1;
+        quad3=quad1;
+            quad1(Npix/2+1:Npix,:)=0;
+                quad3(1:Npix/2,:)=0;
+            figure; imagesc(quad1+2*quad2+3*quad3+4*quad4)
 
-quad2((Npix/2+1)-rooferror:(Npix/2+1)+rooferror,:)=1;
-quad2(:,1:(Npix/2))=0;
-    quad4((Npix/2+1)-rooferror:(Npix/2+1)+rooferror,:)=1;
-    quad4(:,(Npix/2+1):Npix)=0;
-        quad1=quad2+quad4<1;
-        quad1(Npix/2+1:Npix,:)=0;
-                quad3=quad1+quad2+quad4<1;
+
+
+
+
+
+
+
 end
                     
 % Add In Tip/Tilt
@@ -100,12 +119,15 @@ if tabletop==true
 flat=pyramidmask(Npix/2, Npix/2);
 pyramidmask(Npix/2-tabletoperror/2:Npix/2+tabletoperror/2,Npix/2-tabletoperror/2:Npix/2+tabletoperror/2)=flat;
 figure; imagesc(angle(pyramidmask));
+figure; imagesc(angle(pyramidmask));
+save('quadpyramidmask.mat','pyramidmask')
 end
 end
 
-
-
-
+%% Continuing the debugging code
+pyramid=FTpupil.*pyramidmask;
+Pupilpyramid=abs(ifftshift(fft2(ifftshift(pyramid)))).^2;
+figure; imagesc(Pupilpyramid); axis equal
 
 
 
